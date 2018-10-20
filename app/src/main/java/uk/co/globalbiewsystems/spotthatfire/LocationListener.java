@@ -4,9 +4,7 @@ import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-
 import static android.content.ContentValues.TAG;
-
 public class LocationListener implements android.location.LocationListener {
 
     private Context c;
@@ -14,6 +12,7 @@ public class LocationListener implements android.location.LocationListener {
     public double lng;
     public float bearing;
     public LocationListener(Context context) {
+        Log.d("LOCATION","Location");
         c = context;
         this.lat = 0;
         this.lng = 0;

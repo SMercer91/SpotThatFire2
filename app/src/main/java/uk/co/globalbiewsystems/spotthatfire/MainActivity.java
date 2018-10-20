@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +26,12 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                    1340 );
         }
+        Fragment firePopup = new FireShow();
+
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.fragment, firePopup, "FirePopup");
+        fragmentTransaction.commit();
     }
 
     private void startGPSLocationService() {
@@ -36,5 +44,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (SecurityException e) {
             Log.d("GPS ", "Error Initialising GPS");
         }
+
     }
 }
