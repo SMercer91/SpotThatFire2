@@ -20,7 +20,6 @@ public class LocationPost {
                 .readTimeout(30, TimeUnit.SECONDS)
                 .build();
         final Request request = new Request.Builder()
-
                 .url(Url)
                 .post(requestBody)
                 .build();
