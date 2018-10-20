@@ -17,6 +17,7 @@
         android:text="Can you see smoke?" />
 
     <RadioGroup
+        android:id="@+id/SmokeGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -49,6 +50,7 @@
         android:text="Can you see the fire?" />
 
     <RadioGroup
+        android:id="@+id/FireGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -80,6 +82,7 @@
         android:textAlignment="center" />
 
     <RadioGroup
+        android:id="@+id/SeverityGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
