@@ -3,6 +3,7 @@ package uk.co.globalbiewsystems.spotthatfire;
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 
 public class LocationListener implements android.location.LocationListener {
 
@@ -10,6 +11,7 @@ public class LocationListener implements android.location.LocationListener {
     public double lat ;
     public double lng;
     public LocationListener(Context context) {
+        Log.d("LOCATION","Location");
         c = context;
         this.lat = 0;
         this.lng = 0;
