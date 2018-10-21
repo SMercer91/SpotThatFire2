@@ -31,13 +31,13 @@ public class CheckDistanceFromFires {
                 .url(url)
                 .build();
         Response response = null;
-        try {
-            response = client.newCall(request).execute();
+        // try {
+            // response = client.newCall(request).execute();
             //json = new JSONObject(response.body().string());
            // Log.d("LOCATION", "onResponse:"+json.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //} catch (IOException e) {
+            //e.printStackTrace();
+        //}
 
         for (int i = 0; i < 0 ; i++) {
             //double latitude=lats[i];

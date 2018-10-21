@@ -69,8 +69,7 @@ public class FireShow extends Fragment {
                 int severityIndex = severityGroup.indexOfChild(severityResultView);
                 RadioButton actualSeverity = (RadioButton) severityGroup.getChildAt(severityIndex);
 
-
-
+                new updatedb().execute();
 
             }
         });
@@ -83,7 +82,7 @@ public class FireShow extends Fragment {
             try {
                 final ReportsDO newsItem = new ReportsDO();
 
-                newsItem.setUserId("");
+                newsItem.setUserId("12323");
 
                 newsItem.setCategory("Wildfire");
                 newsItem.setItemId("1");
