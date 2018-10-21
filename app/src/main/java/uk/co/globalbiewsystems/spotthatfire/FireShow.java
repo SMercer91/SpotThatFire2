@@ -1,97 +1,98 @@
 package uk.co.globalbiewsystems.spotthatfire;
 
-import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.config.AWSConfiguration;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.models.nosql.ReportsDO;
+
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FireShow.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link FireShow#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FireShow extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private Button submit;
+    private RadioGroup smokeGroup;
+    private RadioGroup fireGroup;
+    private RadioGroup severityGroup;
+    DynamoDBMapper dynamoDBMapper;
 
-    private OnFragmentInteractionListener mListener;
+    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_fire_show, parent, false);
 
-    public FireShow() {
-        // Required empty public constructor
+        submit = view.findViewById(R.id.sendButton);
+        smokeGroup = view.findViewById(R.id.SmokeGroup);
+        fireGroup = view.findViewById(R.id.FireGroup);
+        severityGroup = view.findViewById(R.id.SeverityGroup);
+
+        AWSMobileClient.getInstance().initialize(this.getContext()).execute();
+
+        AWSCredentialsProvider credentialsProvider = AWSMobileClient.getInstance().getCredentialsProvider();
+        AWSConfiguration configuration = AWSMobileClient.getInstance().getConfiguration();
+
+        AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(credentialsProvider);
+
+        this.dynamoDBMapper = DynamoDBMapper.builder()
+                .dynamoDBClient(dynamoDBClient)
+                .awsConfiguration(configuration)
+                .build();
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int smokeResult = smokeGroup.getCheckedRadioButtonId();
+                View smokeResultView = smokeGroup.findViewById(smokeResult);
+                int SmokeIndex = smokeGroup.indexOfChild(smokeResultView);
+                RadioButton actualSmoke = (RadioButton) smokeGroup.getChildAt(SmokeIndex);
+
+                int fireResult = fireGroup.getCheckedRadioButtonId();
+                View fireResultView = fireGroup.findViewById(fireResult);
+                int fireIndex = fireGroup.indexOfChild(fireResultView);
+                RadioButton actualFire = (RadioButton) fireGroup.getChildAt(fireIndex);
+
+                int severityResult = severityGroup.getCheckedRadioButtonId();
+                View severityResultView = severityGroup.findViewById(severityResult);
+                int severityIndex = severityGroup.indexOfChild(severityResultView);
+                RadioButton actualSeverity = (RadioButton) severityGroup.getChildAt(severityIndex);
+
+
+
+
+            }
+        });
+        return view;
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FireShow.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FireShow newInstance(String param1, String param2) {
-        FireShow fragment = new FireShow();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    protected class updatedb extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                final ReportsDO newsItem = new ReportsDO();
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+                newsItem.setUserId("");
+
+                newsItem.setCategory("Wildfire");
+                newsItem.setItemId("1");
+                dynamoDBMapper.save(newsItem);
+                } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_fire_show, container, false);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }
