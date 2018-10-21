@@ -1,7 +1,7 @@
 package uk.co.globalbiewsystems.spotthatfire;
 
-import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -13,9 +13,15 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import org.w3c.dom.Text;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.config.AWSConfiguration;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.models.nosql.ReportsDO;
 
-import java.util.zip.Inflater;
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+
 
 public class FireShow extends Fragment {
 
@@ -23,6 +29,7 @@ public class FireShow extends Fragment {
     private RadioGroup smokeGroup;
     private RadioGroup fireGroup;
     private RadioGroup severityGroup;
+    DynamoDBMapper dynamoDBMapper;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fire_show, parent, false);
@@ -31,6 +38,18 @@ public class FireShow extends Fragment {
         smokeGroup = view.findViewById(R.id.SmokeGroup);
         fireGroup = view.findViewById(R.id.FireGroup);
         severityGroup = view.findViewById(R.id.SeverityGroup);
+
+        AWSMobileClient.getInstance().initialize(this.getContext()).execute();
+
+        AWSCredentialsProvider credentialsProvider = AWSMobileClient.getInstance().getCredentialsProvider();
+        AWSConfiguration configuration = AWSMobileClient.getInstance().getConfiguration();
+
+        AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(credentialsProvider);
+
+        this.dynamoDBMapper = DynamoDBMapper.builder()
+                .dynamoDBClient(dynamoDBClient)
+                .awsConfiguration(configuration)
+                .build();
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,8 +71,28 @@ public class FireShow extends Fragment {
 
 
 
+
             }
         });
         return view;
+    }
+
+    protected class updatedb extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                final ReportsDO newsItem = new ReportsDO();
+
+                newsItem.setUserId("");
+
+                newsItem.setCategory("Wildfire");
+                newsItem.setItemId("1");
+                dynamoDBMapper.save(newsItem);
+                } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+
+        }
     }
 }
