@@ -8,9 +8,9 @@ import static android.content.ContentValues.TAG;
 public class LocationListener implements android.location.LocationListener {
 
     private Context c;
-    public double lat ;
-    public double lng;
-    public float bearing;
+    public static double lat ;
+    public static double lng;
+    public static float bearing;
     public LocationListener(Context context) {
         Log.d("LOCATION","Location");
         c = context;
@@ -29,6 +29,8 @@ public class LocationListener implements android.location.LocationListener {
         Log.v(TAG, longitude);
         String latitude = "Latitude: " + location.getLatitude();
         Log.v(TAG, latitude);
+        CheckDistanceFromFires test = new CheckDistanceFromFires();
+        test.CheckDistance();
     }
 
     @Override
